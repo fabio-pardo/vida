@@ -1,0 +1,7 @@
+[tool.pyright]
+include = ["app"]
+defineConstant = { DEBUG = true }
+
+reportMissingImports = true
+
+pythonVersion = "3.8.18"

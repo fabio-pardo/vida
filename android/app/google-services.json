@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "917175833848",
+    "project_id": "vida-meals",
+    "storage_bucket": "vida-meals.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:917175833848:android:af11839f69252894d0d70d",
+        "android_client_info": {
+          "package_name": "com.example.vida"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAWNrsqCnMIpSuKb9NMt9GJrA1E5fEDfgc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

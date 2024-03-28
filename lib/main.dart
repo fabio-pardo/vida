@@ -12,10 +12,12 @@ void main() async {
     name: 'vida-meals',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -24,19 +26,19 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: AuthPage(),
+      home: const _AuthPage(),
     );
   }
 }
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({Key? key}) : super(key: key);
+class _AuthPage extends StatefulWidget {
+  const _AuthPage();
 
   @override
   _AuthPageState createState() => _AuthPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _AuthPageState extends State<_AuthPage> {
   User? _user;
 
   @override
@@ -109,12 +111,12 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Vida Meals'),
+        title: const Text('Vida Meals'),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: signOutCallback,
-          child: Text('Sign Out'),
+          child: const Text('Sign Out'),
         ),
       ),
     );

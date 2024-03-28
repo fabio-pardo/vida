@@ -12,87 +12,111 @@ void main() async {
     name: 'vida-meals',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Vida Meals',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
         useMaterial3: true,
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: AuthPage(),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  final String title;
-  const MyHomePage({super.key, required this.title});
+class AuthPage extends StatefulWidget {
+  const AuthPage({Key? key}) : super(key: key);
+
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  _AuthPageState createState() => _AuthPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _AuthPageState extends State<AuthPage> {
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    _checkCurrentUser();
+  }
+
+  void _checkCurrentUser() {
+    setState(() {
+      _user = FirebaseAuth.instance.currentUser;
+    });
+  }
+
+  void _signIn() async {
+    // Perform sign in with Firebase
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: 'test_customer@vida.com',
+        password: 'test1234',
+      );
+      _checkCurrentUser();
+    } catch (e) {
+      log("Error signing in: $e");
+    }
+  }
+
+  void _signOut() async {
+    await FirebaseAuth.instance.signOut();
+    _checkCurrentUser();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_user == null) {
+      return SignInPage(signInCallback: _signIn);
+    } else {
+      return HomePage(signOutCallback: _signOut);
+    }
+  }
+}
+
+class SignInPage extends StatelessWidget {
+  final VoidCallback signInCallback;
+
+  const SignInPage({super.key, required this.signInCallback});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(widget.title),
+        title: const Text('Sign In'),
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
+        child: ElevatedButton(
+          onPressed: signInCallback,
+          child: const Text('Sign In'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
       ),
     );
   }
+}
 
-  void _incrementCounter() async {
-    try {
-      String emailAddress = 'test_admin@vida.com';
-      String password = 'test1234';
-      final credential = await FirebaseAuth.instance
-          .signInWithEmailAndPassword(email: emailAddress, password: password);
-    } on FirebaseAuthException catch (e) {
-      if (e.code == 'user-not-found') {
-        print('No user found for that email.');
-      } else if (e.code == 'wrong-password') {
-        print('Wrong password provided for that user.');
-      }
-    } finally {
-      await FirebaseAuth.instance.signOut();
-      print('Finally block');
-    }
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
+class HomePage extends StatelessWidget {
+  final VoidCallback signOutCallback;
+
+  const HomePage({super.key, required this.signOutCallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Vida Meals'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: signOutCallback,
+          child: Text('Sign Out'),
+        ),
+      ),
+    );
   }
 }

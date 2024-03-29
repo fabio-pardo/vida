@@ -8,6 +8,7 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // Initialize Firebase with the default options
   await Firebase.initializeApp(
     name: 'vida-meals',
     options: DefaultFirebaseOptions.currentPlatform,

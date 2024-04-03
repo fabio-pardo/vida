@@ -3,8 +3,7 @@ import 'dart:developer';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'firebase_options.dart';
+import 'package:vida/services/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +14,27 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
+}
+
+class HomePage extends StatelessWidget {
+  final VoidCallback signOutCallback;
+
+  const HomePage({super.key, required this.signOutCallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Vida Meals'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: signOutCallback,
+          child: const Text('Sign Out'),
+        ),
+      ),
+    );
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -33,6 +53,27 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class SignInPage extends StatelessWidget {
+  final VoidCallback signInCallback;
+
+  const SignInPage({super.key, required this.signInCallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Sign In'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: signInCallback,
+          child: const Text('Sign In'),
+        ),
+      ),
+    );
+  }
+}
+
 class _AuthPage extends StatefulWidget {
   const _AuthPage();
 
@@ -42,6 +83,15 @@ class _AuthPage extends StatefulWidget {
 
 class _AuthPageState extends State<_AuthPage> {
   User? _user;
+
+  @override
+  Widget build(BuildContext context) {
+    if (_user == null) {
+      return SignInPage(signInCallback: _signIn);
+    } else {
+      return HomePage(signOutCallback: _signOut);
+    }
+  }
 
   @override
   void initState() {
@@ -71,56 +121,5 @@ class _AuthPageState extends State<_AuthPage> {
   void _signOut() async {
     await FirebaseAuth.instance.signOut();
     _checkCurrentUser();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (_user == null) {
-      return SignInPage(signInCallback: _signIn);
-    } else {
-      return HomePage(signOutCallback: _signOut);
-    }
-  }
-}
-
-class SignInPage extends StatelessWidget {
-  final VoidCallback signInCallback;
-
-  const SignInPage({super.key, required this.signInCallback});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Sign In'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: signInCallback,
-          child: const Text('Sign In'),
-        ),
-      ),
-    );
-  }
-}
-
-class HomePage extends StatelessWidget {
-  final VoidCallback signOutCallback;
-
-  const HomePage({super.key, required this.signOutCallback});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vida Meals'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: signOutCallback,
-          child: const Text('Sign Out'),
-        ),
-      ),
-    );
   }
 }

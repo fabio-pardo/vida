@@ -4,5 +4,8 @@ SHELL := /bin/zsh
 
 all:
 
+test:
+	flutter test
+
 flutter:
 	flutter run

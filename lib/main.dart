@@ -1,17 +1,14 @@
-import 'dart:developer';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:vida/models/meal.dart';
+import 'package:vida/services/firebase_firestore.dart';
 import 'package:vida/services/firebase_options.dart';
 import 'package:vida/services/firebase_storage.dart'
     show uploadImageToFirebaseStorage;
 import 'package:vida/utils/utils.dart' show prepareImageFile;
-import 'package:path_provider/path_provider.dart'
-    show getApplicationDocumentsDirectory;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -94,11 +91,38 @@ class _AuthPageState extends State<_AuthPage> {
 
   @override
   Widget build(BuildContext context) {
+    //_testAddingMeal();
+    //_testGettingMeals();
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     } else {
       return SignOutPage(signOutCallback: _signOut);
     }
+  }
+
+  void _testGettingMeals() async {
+    List<Meal> meals = await getMeals();
+    for (var i = 0; i < meals.length; i++) {
+      print(i);
+      meals[i].printDetails();
+    }
+  }
+
+  void _testAddingMeal() async {
+    File imageFile = await prepareImageFile('assets/chicken_parm.png');
+    String downloadUrl = await uploadImageToFirebaseStorage(
+      imageFile,
+      "lasagna",
+    );
+    print(downloadUrl);
+    Meal meal = Meal(
+      description: 'A delicious meal',
+      imageUrl: downloadUrl,
+      name: 'Lasagna',
+      price: 15.99,
+    );
+    await addMeal(meal);
+    print("Added meal");
   }
 
   @override
@@ -115,18 +139,11 @@ class _AuthPageState extends State<_AuthPage> {
 
   void _signIn() async {
     try {
-      print("Before sign in");
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: 'test_customer@vida.com',
         password: 'test1234',
       );
-      print("After sign in");
       _checkCurrentUser();
-
-      File imageFile = await prepareImageFile('assets/chicken_parm.png');
-      String downloadUrl =
-          await uploadImageToFirebaseStorage(imageFile, "lasagna");
-      print(downloadUrl);
     } catch (e) {
       print("Error occurred: $e");
     }

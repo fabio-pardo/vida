@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:vida/models/meals.dart';
+import 'package:vida/models/meal.dart';
 
 Future<void> addMeal(Meal meal) async {
   CollectionReference meals = FirebaseFirestore.instance.collection('meals');
@@ -12,3 +12,17 @@ Future<void> addMeal(Meal meal) async {
   });
 }
 
+Future<List<Meal>> getMeals() async {
+  CollectionReference meals = FirebaseFirestore.instance.collection('meals');
+  QuerySnapshot querySnapshot = await meals.get();
+  List<Meal> mealsList = querySnapshot.docs.map((DocumentSnapshot document) {
+    Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    return Meal(
+      description: data['description'],
+      imageUrl: data['imageUrl'],
+      name: data['name'],
+      price: data['price'],
+    );
+  }).toList();
+  return mealsList;
+}

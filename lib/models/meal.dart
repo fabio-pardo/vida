@@ -10,4 +10,11 @@ class Meal {
   final String imageUrl;
   final String name;
   final double price;
+
+  void printDetails() {
+    print('Name: $name');
+    print('Description: $description');
+    print('Price: $price');
+    print('Image URL: $imageUrl');
+  }
 }

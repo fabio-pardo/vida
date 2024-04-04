@@ -1,9 +1,17 @@
 import 'dart:developer';
+import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:vida/services/firebase_options.dart';
+import 'package:vida/services/firebase_storage.dart'
+    show uploadImageToFirebaseStorage;
+import 'package:vida/utils/utils.dart' show prepareImageFile;
+import 'package:path_provider/path_provider.dart'
+    show getApplicationDocumentsDirectory;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -14,27 +22,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
   runApp(const MyApp());
-}
-
-class HomePage extends StatelessWidget {
-  final VoidCallback signOutCallback;
-
-  const HomePage({super.key, required this.signOutCallback});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Vida Meals'),
-      ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: signOutCallback,
-          child: const Text('Sign Out'),
-        ),
-      ),
-    );
-  }
 }
 
 class MyApp extends StatelessWidget {
@@ -62,12 +49,33 @@ class SignInPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sign In'),
+        title: const Text('SignInPage Widget'),
       ),
       body: Center(
         child: ElevatedButton(
           onPressed: signInCallback,
           child: const Text('Sign In'),
+        ),
+      ),
+    );
+  }
+}
+
+class SignOutPage extends StatelessWidget {
+  final VoidCallback signOutCallback;
+
+  const SignOutPage({super.key, required this.signOutCallback});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('SignOutPage Widget'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: signOutCallback,
+          child: const Text('Sign Out'),
         ),
       ),
     );
@@ -89,7 +97,7 @@ class _AuthPageState extends State<_AuthPage> {
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     } else {
-      return HomePage(signOutCallback: _signOut);
+      return SignOutPage(signOutCallback: _signOut);
     }
   }
 
@@ -106,15 +114,21 @@ class _AuthPageState extends State<_AuthPage> {
   }
 
   void _signIn() async {
-    // Perform sign in with Firebase
     try {
+      print("Before sign in");
       await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: 'test_customer@vida.com',
         password: 'test1234',
       );
+      print("After sign in");
       _checkCurrentUser();
+
+      File imageFile = await prepareImageFile('assets/chicken_parm.png');
+      String downloadUrl =
+          await uploadImageToFirebaseStorage(imageFile, "lasagna");
+      print(downloadUrl);
     } catch (e) {
-      log("Error signing in: $e");
+      print("Error occurred: $e");
     }
   }
 

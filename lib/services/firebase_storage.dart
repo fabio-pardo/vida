@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:firebase_storage/firebase_storage.dart';
 
-Future<String> uploadImageToStorage(File imageFile) async {
-  // Generate a random file name
-  String fileName = DateTime.now().millisecondsSinceEpoch.toString();
-
+Future<String> uploadImageToFirebaseStorage(
+    File imageFile, String fileName) async {
   // Create a reference to the location you want to upload to in firebase
   Reference storageReference = FirebaseStorage.instance.ref().child(fileName);
 

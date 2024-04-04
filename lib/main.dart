@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:vida/models/meal.dart';
+import 'package:vida/models/menu.dart';
 import 'package:vida/services/firebase_firestore.dart';
 import 'package:vida/services/firebase_options.dart';
 import 'package:vida/services/firebase_storage.dart'
@@ -92,7 +93,7 @@ class _AuthPageState extends State<_AuthPage> {
   @override
   Widget build(BuildContext context) {
     //_testAddingMeal();
-    //_testGettingMeals();
+    _testGettingMeals();
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     } else {
@@ -148,9 +149,7 @@ class _AuthPageState extends State<_AuthPage> {
 
   void _testGettingMeals() async {
     List<Meal> meals = await getMeals();
-    for (var i = 0; i < meals.length; i++) {
-      print(i);
-      meals[i].printDetails();
-    }
+    Menu menu = Menu(meals: meals);
+    menu.printMenu();
   }
 }

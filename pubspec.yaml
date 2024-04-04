@@ -41,6 +41,7 @@ dependencies:
   firebase_storage_mocks: ^0.6.1
   mockito: ^5.4.4
   path_provider: ^2.1.2
+  cloud_firestore: ^4.16.0
 
 dev_dependencies:
   flutter_test:

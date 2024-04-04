@@ -100,31 +100,6 @@ class _AuthPageState extends State<_AuthPage> {
     }
   }
 
-  void _testGettingMeals() async {
-    List<Meal> meals = await getMeals();
-    for (var i = 0; i < meals.length; i++) {
-      print(i);
-      meals[i].printDetails();
-    }
-  }
-
-  void _testAddingMeal() async {
-    File imageFile = await prepareImageFile('assets/chicken_parm.png');
-    String downloadUrl = await uploadImageToFirebaseStorage(
-      imageFile,
-      "lasagna",
-    );
-    print(downloadUrl);
-    Meal meal = Meal(
-      description: 'A delicious meal',
-      imageUrl: downloadUrl,
-      name: 'Lasagna',
-      price: 15.99,
-    );
-    await addMeal(meal);
-    print("Added meal");
-  }
-
   @override
   void initState() {
     super.initState();
@@ -152,5 +127,30 @@ class _AuthPageState extends State<_AuthPage> {
   void _signOut() async {
     await FirebaseAuth.instance.signOut();
     _checkCurrentUser();
+  }
+
+  void _testAddingMeal() async {
+    File imageFile = await prepareImageFile('assets/chicken_parm.png');
+    String downloadUrl = await uploadImageToFirebaseStorage(
+      imageFile,
+      "lasagna",
+    );
+    print(downloadUrl);
+    Meal meal = Meal(
+      description: 'A delicious meal',
+      imageUrl: downloadUrl,
+      name: 'Lasagna',
+      price: 15.99,
+    );
+    await addMeal(meal);
+    print("Added meal");
+  }
+
+  void _testGettingMeals() async {
+    List<Meal> meals = await getMeals();
+    for (var i = 0; i < meals.length; i++) {
+      print(i);
+      meals[i].printDetails();
+    }
   }
 }

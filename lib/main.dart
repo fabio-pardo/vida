@@ -93,7 +93,7 @@ class _AuthPageState extends State<_AuthPage> {
   @override
   Widget build(BuildContext context) {
     //_testAddingMeal();
-    _testGettingMeals();
+    //_testGettingMeals();
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     } else {

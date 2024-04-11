@@ -1,31 +1,72 @@
 import 'package:flutter/material.dart'
     show
-        StatelessWidget,
-        Scaffold,
-        Center,
-        ElevatedButton,
-        Widget,
-        BuildContext,
         AppBar,
-        Text;
+        BoxDecoration,
+        BuildContext,
+        Center,
+        Colors,
+        Divider,
+        Drawer,
+        DrawerHeader,
+        EdgeInsets,
+        Icon,
+        Icons,
+        ListTile,
+        ListView,
+        Navigator,
+        Scaffold,
+        StatelessWidget,
+        Text,
+        Widget;
+import 'package:flutter/src/widgets/basic.dart'
+    show BoxDecoration, Center, Column, EdgeInsets, Expanded, SizedBox;
 import 'package:vida/widgets/admin/navigation_bar.dart' show NavBar;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomePage Widget'),
+        title: const Text('Admin Screen'),
+        backgroundColor: Colors.green[400],
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            // Sign out the current user
-            // and navigate to the sign-in page
-          },
-          child: const Text('Sign Out'),
+      drawer: Drawer(
+        child: Column(
+          children: [
+            Expanded(
+              child: ListView(
+                padding: EdgeInsets.zero,
+                children: const [
+                  SizedBox(
+                    height: 115,
+                    child: DrawerHeader(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                      ),
+                      margin: EdgeInsets.all(0.0),
+                      padding: EdgeInsets.all(0.0),
+                      child: null,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const Divider(),
+            ListTile(
+              leading: const Icon(Icons.logout),
+              title: const Text('Log Out'),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            const SizedBox(height: 26),
+          ],
         ),
+      ),
+      body: const Center(
+        child: Text("Something will go here."),
       ),
       bottomNavigationBar: const NavBar(),
     );

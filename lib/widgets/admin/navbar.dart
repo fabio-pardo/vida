@@ -7,6 +7,14 @@ class NavBar extends StatefulWidget {
 }
 
 class NavBarState extends State<NavBar> {
+  static const IconData mealIcon =
+      IconData(0xe532, fontFamily: 'MaterialIcons');
+
+  static const IconData menuBookIcon =
+      IconData(0xe3dd, fontFamily: 'MaterialIcons');
+
+  static const IconData ordersIcon =
+      IconData(0xe1bd, fontFamily: 'MaterialIcons');
   int _selectedIndex = 0;
 
   void _onItemTapped(int index) {
@@ -33,15 +41,15 @@ class NavBarState extends State<NavBar> {
     return BottomNavigationBar(
       items: const <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home),
+          icon: Icon(mealIcon),
           label: 'Meals',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.business),
+          icon: Icon(menuBookIcon),
           label: 'Menu',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.school),
+          icon: Icon(ordersIcon),
           label: 'Orders',
         ),
       ],

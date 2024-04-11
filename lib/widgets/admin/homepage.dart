@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:vida/widgets/admin/navbar.dart' show NavBar;
 
-class HomePage extends StatelessWidget {
-  const HomePage({super.key});
+class AdminHomePage extends StatelessWidget {
+  final VoidCallback signOutCallback;
+
+  const AdminHomePage({super.key, required this.signOutCallback});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +39,7 @@ class HomePage extends StatelessWidget {
               leading: const Icon(Icons.logout),
               title: const Text('Log Out'),
               onTap: () {
-                Navigator.pop(context);
+                signOutCallback();
               },
             ),
             const SizedBox(height: 26),

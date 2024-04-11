@@ -1,26 +1,5 @@
-import 'package:flutter/material.dart'
-    show
-        AppBar,
-        BoxDecoration,
-        BuildContext,
-        Center,
-        Colors,
-        Divider,
-        Drawer,
-        DrawerHeader,
-        EdgeInsets,
-        Icon,
-        Icons,
-        ListTile,
-        ListView,
-        Navigator,
-        Scaffold,
-        StatelessWidget,
-        Text,
-        Widget;
-import 'package:flutter/src/widgets/basic.dart'
-    show BoxDecoration, Center, Column, EdgeInsets, Expanded, SizedBox;
-import 'package:vida/widgets/admin/navigation_bar.dart' show NavBar;
+import 'package:flutter/material.dart';
+import 'package:vida/widgets/admin/navbar.dart' show NavBar;
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});

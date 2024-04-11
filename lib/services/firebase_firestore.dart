@@ -26,3 +26,21 @@ Future<List<Meal>> getMeals() async {
   }).toList();
   return mealsList;
 }
+
+Future<void> getUserRole(String uid, Function(String) callback) async {
+  try {
+    CollectionReference users = FirebaseFirestore.instance.collection('users');
+
+    DocumentSnapshot documentSnapshot = await users.doc(uid).get();
+
+    if (documentSnapshot.exists) {
+      Map<String, dynamic> userData =
+          documentSnapshot.data() as Map<String, dynamic>;
+      callback(userData["role"]);
+    } else {
+      print('No user found with the specified UID: $uid');
+    }
+  } catch (e) {
+    print('Error retrieving user data: $e');
+  }
+}

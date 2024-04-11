@@ -10,6 +10,7 @@ import 'package:vida/services/firebase_options.dart';
 import 'package:vida/services/firebase_storage.dart'
     show uploadImageToFirebaseStorage;
 import 'package:vida/utils/utils.dart' show prepareImageFile;
+import 'package:vida/widgets/admin/homepage.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,9 +67,10 @@ class SignOutPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const String appBarTitle = 'SignOutPage Widget';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('SignOutPage Widget'),
+        title: const Text(appBarTitle),
       ),
       body: Center(
         child: ElevatedButton(
@@ -97,7 +99,8 @@ class _AuthPageState extends State<_AuthPage> {
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     } else {
-      return SignOutPage(signOutCallback: _signOut);
+      return HomePage();
+      //return SignOutPage(signOutCallback: _signOut);
     }
   }
 

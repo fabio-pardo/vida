@@ -3,10 +3,24 @@ import 'package:vida/models/meal.dart';
 import 'package:vida/services/firebase_firestore.dart';
 import 'package:vida/widgets/admin/navbar.dart' show NavBar;
 
-class AdminHomePage extends StatelessWidget {
-  final VoidCallback signOutCallback;
-
+class AdminHomePage extends StatefulWidget {
   const AdminHomePage({super.key, required this.signOutCallback});
+  final VoidCallback signOutCallback;
+  @override
+  State<StatefulWidget> createState() => _AdminHomePageState();
+}
+
+class _AdminHomePageState extends State<AdminHomePage> {
+  Set<String> selectedMeals = {};
+  void toggleSelectedMeals(String mealID) {
+    setState(() {
+      if (selectedMeals.contains(mealID)) {
+        selectedMeals.remove(mealID);
+      } else {
+        selectedMeals.add(mealID);
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +50,7 @@ class AdminHomePage extends StatelessWidget {
                       backgroundImage: NetworkImage(meal.imageUrl),
                     ),
                     trailing: Text('\$${meal.price.toStringAsFixed(2)}'),
+                    onTap: () => toggleSelectedMeals(meal.id),
                   );
                 },
               );
@@ -45,40 +60,54 @@ class AdminHomePage extends StatelessWidget {
           }
         },
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            Expanded(
-              child: ListView(
-                padding: EdgeInsets.zero,
-                children: const [
-                  SizedBox(
-                    height: 115,
-                    child: DrawerHeader(
-                      decoration: BoxDecoration(
-                        color: Colors.red,
-                      ),
-                      margin: EdgeInsets.all(0.0),
-                      padding: EdgeInsets.all(0.0),
-                      child: null,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const Divider(),
-            ListTile(
-              leading: const Icon(Icons.logout),
-              title: const Text('Log Out'),
-              onTap: () {
-                signOutCallback();
-              },
-            ),
-            const SizedBox(height: 26),
-          ],
-        ),
-      ),
+      drawer: MyDrawer(widget: widget),
       bottomNavigationBar: const NavBar(),
+    );
+  }
+}
+
+class MyDrawer extends StatelessWidget {
+  const MyDrawer({
+    super.key,
+    required this.widget,
+  });
+
+  final AdminHomePage widget;
+
+  @override
+  Widget build(BuildContext context) {
+    return Drawer(
+      child: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: const [
+                SizedBox(
+                  height: 115,
+                  child: DrawerHeader(
+                    decoration: BoxDecoration(
+                      color: Colors.red,
+                    ),
+                    margin: EdgeInsets.all(0.0),
+                    padding: EdgeInsets.all(0.0),
+                    child: null,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.logout),
+            title: const Text('Log Out'),
+            onTap: () {
+              widget.signOutCallback();
+            },
+          ),
+          const SizedBox(height: 26),
+        ],
+      ),
     );
   }
 }

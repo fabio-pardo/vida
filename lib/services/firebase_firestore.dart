@@ -18,6 +18,7 @@ Future<List<Meal>> getMeals() async {
   List<Meal> mealsList = querySnapshot.docs.map((DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
     return Meal(
+      id: document.id,
       description: data['description'],
       imageUrl: data['imageUrl'],
       name: data['name'],

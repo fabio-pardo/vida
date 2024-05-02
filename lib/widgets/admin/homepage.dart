@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:vida/models/meal.dart';
 import 'package:vida/services/firebase_firestore.dart';
-import 'package:vida/widgets/admin/navbar.dart' show NavBar;
 
 class AdminHomePage extends StatefulWidget {
-  const AdminHomePage({super.key, required this.signOutCallback});
-  final VoidCallback signOutCallback;
+  const AdminHomePage({super.key});
   @override
   State<StatefulWidget> createState() => _AdminHomePageState();
 }
@@ -17,7 +15,9 @@ class _AdminHomePageState extends State<AdminHomePage> {
       if (selectedMeals.contains(mealID)) {
         selectedMeals.remove(mealID);
       } else {
-        selectedMeals.add(mealID);
+        if (selectedMeals.length < 5) {
+          selectedMeals.add(mealID);
+        }
       }
     });
   }
@@ -41,66 +41,30 @@ class _AdminHomePageState extends State<AdminHomePage> {
                 return ListTile(
                   title: Text(meal.name),
                   subtitle: Text(meal.description),
-                  leading: CircleAvatar(
-                    backgroundImage: NetworkImage(meal.imageUrl),
-                  ),
+                  leading: selectedMeals.contains(meal.id)
+                      ? Icon(Icons.check_circle)
+                      : CircleAvatar(
+                          backgroundImage: NetworkImage(meal.imageUrl),
+                        ),
                   trailing: Text('\$${meal.price.toStringAsFixed(2)}'),
                   onTap: () => toggleSelectedMeals(meal.id),
                 );
               },
             );
           } else {
-            return const Center(child: Text('No meals available.'));
+            return const Center(
+                child: Text('No meals available. Want to create Some?'));
           }
         },
       ),
-      drawer: MyDrawer(widget: widget),
-      bottomNavigationBar: const NavBar(),
-    );
-  }
-}
-
-class MyDrawer extends StatelessWidget {
-  const MyDrawer({
-    super.key,
-    required this.widget,
-  });
-
-  final AdminHomePage widget;
-
-  @override
-  Widget build(BuildContext context) {
-    return Drawer(
-      child: Column(
-        children: [
-          Expanded(
-            child: ListView(
-              padding: EdgeInsets.zero,
-              children: const [
-                SizedBox(
-                  height: 115,
-                  child: DrawerHeader(
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                    ),
-                    margin: EdgeInsets.all(0.0),
-                    padding: EdgeInsets.all(0.0),
-                    child: null,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          const Divider(),
-          ListTile(
-            leading: const Icon(Icons.logout),
-            title: const Text('Log Out'),
-            onTap: () {
-              widget.signOutCallback();
-            },
-          ),
-          const SizedBox(height: 26),
-        ],
+      floatingActionButton: Visibility(
+        visible: selectedMeals.isNotEmpty,
+        child: FloatingActionButton(
+          onPressed: () {
+            addMenu(selectedMeals);
+          },
+          child: Icon(Icons.check),
+        ),
       ),
     );
   }

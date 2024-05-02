@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vida/services/firebase_firestore.dart';
 import 'package:vida/widgets/admin/homepage.dart';
+import 'package:vida/widgets/admin/navbar.dart';
 import 'package:vida/widgets/auth/signin.dart';
 import 'package:vida/widgets/auth/signout.dart';
 
@@ -23,7 +24,7 @@ class AuthPageState extends State<AuthPage> {
     }
     switch (_userRole) {
       case "admin":
-        return AdminHomePage(signOutCallback: _signOut);
+        return NavBar(signOutCallback: _signOut);
       default:
     }
     return SignOutPage(signOutCallback: _signOut);

@@ -45,3 +45,12 @@ Future<void> getUserRole(String uid, Function(String) callback) async {
     print('Error retrieving user data: $e');
   }
 }
+
+Future<void> addMenu(Set<String> meals) async {
+  // Add a set of meal ids to a menu
+  CollectionReference menus = FirebaseFirestore.instance.collection('menus');
+
+  await menus.add({
+    'meals': meals,
+  });
+}

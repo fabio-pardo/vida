@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:vida/models/meal.dart';
 import 'package:vida/services/firebase_firestore.dart';
 
-class AdminHomePage extends StatefulWidget {
-  const AdminHomePage({super.key});
+class AdminMealsPage extends StatefulWidget {
+  const AdminMealsPage({super.key});
   @override
-  State<StatefulWidget> createState() => _AdminHomePageState();
+  State<StatefulWidget> createState() => _AdminMealsPageState();
 }
 
-class _AdminHomePageState extends State<AdminHomePage> {
+class _AdminMealsPageState extends State<AdminMealsPage> {
   Set<String> selectedMeals = {};
   void toggleSelectedMeals(String mealID) {
     setState(() {

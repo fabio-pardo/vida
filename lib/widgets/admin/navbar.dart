@@ -21,7 +21,7 @@ class NavBarState extends State<NavBar> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    const AdminHomePage(),
+    const AdminMealsPage(),
   ];
 
   void _onItemTapped(int index) {

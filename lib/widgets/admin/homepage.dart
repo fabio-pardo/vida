@@ -32,31 +32,25 @@ class _AdminHomePageState extends State<AdminHomePage> {
       body: FutureBuilder<List<Meal>>(
         future: getMeals(),
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+          List<Meal>? meals = snapshot.data;
+          if (meals != null && meals.isNotEmpty) {
+            return ListView.builder(
+              itemCount: meals.length,
+              itemBuilder: (context, index) {
+                Meal meal = meals[index];
+                return ListTile(
+                  title: Text(meal.name),
+                  subtitle: Text(meal.description),
+                  leading: CircleAvatar(
+                    backgroundImage: NetworkImage(meal.imageUrl),
+                  ),
+                  trailing: Text('\$${meal.price.toStringAsFixed(2)}'),
+                  onTap: () => toggleSelectedMeals(meal.id),
+                );
+              },
+            );
           } else {
-            List<Meal>? meals = snapshot.data;
-            if (meals != null && meals.isNotEmpty) {
-              return ListView.builder(
-                itemCount: meals.length,
-                itemBuilder: (context, index) {
-                  Meal meal = meals[index];
-                  return ListTile(
-                    title: Text(meal.name),
-                    subtitle: Text(meal.description),
-                    leading: CircleAvatar(
-                      backgroundImage: NetworkImage(meal.imageUrl),
-                    ),
-                    trailing: Text('\$${meal.price.toStringAsFixed(2)}'),
-                    onTap: () => toggleSelectedMeals(meal.id),
-                  );
-                },
-              );
-            } else {
-              return const Center(child: Text('No meals available.'));
-            }
+            return const Center(child: Text('No meals available.'));
           }
         },
       ),

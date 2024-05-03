@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:vida/widgets/admin/homepage.dart';
 
-class NavBar extends StatefulWidget {
-  const NavBar({super.key, required this.signOutCallback});
+class AdminHomePage extends StatefulWidget {
+  const AdminHomePage({super.key, required this.signOutCallback});
   final VoidCallback signOutCallback;
   @override
-  NavBarState createState() => NavBarState();
+  AdminHomePageState createState() => AdminHomePageState();
 }
 
-class NavBarState extends State<NavBar> {
+class AdminHomePageState extends State<AdminHomePage> {
   static const IconData mealIcon =
       IconData(0xe532, fontFamily: 'MaterialIcons');
 
@@ -22,6 +22,7 @@ class NavBarState extends State<NavBar> {
 
   final List<Widget> _pages = [
     const AdminMealsPage(),
+    const AdminMenuPage(),
   ];
 
   void _onItemTapped(int index) {
@@ -33,6 +34,10 @@ class NavBarState extends State<NavBar> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Admin Screen'),
+        backgroundColor: Colors.green[400],
+      ),
       body: IndexedStack(index: _selectedIndex, children: _pages),
       bottomNavigationBar: BottomNavigationBar(
         items: const <BottomNavigationBarItem>[
@@ -64,7 +69,7 @@ class MyDrawer extends StatelessWidget {
     required this.widget,
   });
 
-  final NavBar widget;
+  final AdminHomePage widget;
 
   @override
   Widget build(BuildContext context) {

@@ -25,10 +25,6 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Admin Screen'),
-        backgroundColor: Colors.green[400],
-      ),
       body: FutureBuilder<List<Meal>>(
         future: getMeals(),
         builder: (context, snapshot) {
@@ -67,5 +63,22 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
         ),
       ),
     );
+  }
+}
+
+class AdminMenuPage extends StatefulWidget {
+  const AdminMenuPage({super.key});
+
+  @override
+  State<StatefulWidget> createState() => _AdminMenuPageState();
+}
+
+class _AdminMenuPageState extends State<AdminMenuPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        body: Center(
+      child: Text('No meals available. Want to create Some?'),
+    ));
   }
 }

@@ -38,7 +38,7 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
                   title: Text(meal.name),
                   subtitle: Text(meal.description),
                   leading: selectedMeals.contains(meal.id)
-                      ? Icon(Icons.check_circle)
+                      ? const Icon(Icons.check_circle)
                       : CircleAvatar(
                           backgroundImage: NetworkImage(meal.imageUrl),
                         ),
@@ -59,7 +59,7 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
           onPressed: () {
             addMenu(selectedMeals);
           },
-          child: Icon(Icons.check),
+          child: const Icon(Icons.check),
         ),
       ),
     );
@@ -76,7 +76,7 @@ class AdminMenuPage extends StatefulWidget {
 class _AdminMenuPageState extends State<AdminMenuPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
         body: Center(
       child: Text('No meals available. Want to create Some?'),
     ));

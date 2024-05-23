@@ -17,15 +17,19 @@ Future<List<Meal>> getMeals() async {
   QuerySnapshot querySnapshot = await meals.get();
   List<Meal> mealsList = querySnapshot.docs.map((DocumentSnapshot document) {
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
-    return Meal(
-      id: document.id,
-      description: data['description'],
-      imageUrl: data['imageUrl'],
-      name: data['name'],
-      price: data['price'],
-    );
+    return makeMeal(document, data);
   }).toList();
   return mealsList;
+}
+
+Meal makeMeal(DocumentSnapshot<Object?> document, Map<String, dynamic> data) {
+  return Meal(
+    id: document.id,
+    description: data['description'],
+    imageUrl: data['imageUrl'],
+    name: data['name'],
+    price: data['price'],
+  );
 }
 
 Future<void> getUserRole(String uid, Function(String) callback) async {
@@ -53,44 +57,34 @@ Future<void> addMenu(Set<String> meals) async {
   });
 }
 
-Future<Map<String, dynamic>> getMeal(String mealId) async {
+Future<Meal> getMeal(String mealId) async {
   DocumentSnapshot mealDoc =
       await FirebaseFirestore.instance.collection('meals').doc(mealId).get();
   if (mealDoc.exists) {
     Map<String, dynamic> mealData = mealDoc.data() as Map<String, dynamic>;
-    return mealData;
+    return makeMeal(mealDoc, mealData);
   }
-  return {};
+  throw Exception('Meal not found');
 }
 
-Future<List<Map<String, dynamic>>> getMenus() async {
-  CollectionReference menus = FirebaseFirestore.instance.collection("menus");
-  QuerySnapshot menusSnapshot = await menus.get();
-
-  Map<String, Map<String, dynamic>> mealCache = {};
-  List<Map<String, dynamic>> menusList = [];
-
-  for (QueryDocumentSnapshot menuDoc in menusSnapshot.docs) {
-    Map<String, dynamic> menuData = menuDoc.data() as Map<String, dynamic>;
-    List<String> mealIDs = List<String>.from(
-        menuData['meals']); // Ensure mealIDs is a list of strings
-
-    List<Future<Map<String, dynamic>>> mealFutures =
-        mealIDs.map((mealID) async {
-      if (mealCache.containsKey(mealID)) {
-        return mealCache[mealID]!;
-      }
-      Map<String, dynamic> mealData = await getMeal(mealID);
-      mealCache[mealID] = mealData;
-      return mealData;
-    }).toList();
-
-    List<Map<String, dynamic>> mealsData = await Future.wait(mealFutures);
-
-    // Replace the meal IDs with the actual meal data
-    menuData['meals'] = mealsData;
-    menusList.add(menuData);
-  }
-
+// Get menus from Firestore and return them with their list of meals
+Future<List<Future<Map<String, Object>>>> getMenus() async {
+  CollectionReference menus = FirebaseFirestore.instance.collection('menus');
+  QuerySnapshot querySnapshot = await menus.get();
+  // Get the list of menus
+  // For each menu, get the list of meals
+  // Return the list of menus with their list of meals
+  List<Future<Map<String, Object>>> menusList =
+      querySnapshot.docs.map((DocumentSnapshot document) async {
+    Map<String, dynamic> menuData = document.data() as Map<String, dynamic>;
+    List<Meal> meals = [];
+    for (String mealId in menuData['meals']) {
+      meals.add(await getMeal(mealId));
+    }
+    return {
+      'id': document.id,
+      'meals': meals,
+    };
+  }).toList();
   return menusList;
 }

@@ -76,9 +76,65 @@ class AdminMenuPage extends StatefulWidget {
 class _AdminMenuPageState extends State<AdminMenuPage> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-        body: Center(
-      child: Text('No meals available. Want to create Some?'),
-    ));
+    var menus = getMenus();
+    return FutureBuilder(
+      future: menus,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          List<Future<Map<String, Object>>>? menuFutures = snapshot.data;
+          return ListView.builder(
+            itemCount: menuFutures?.length,
+            itemBuilder: (context, index) {
+              return FutureBuilder(
+                future: menuFutures?[index],
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    Map<String, Object>? menuData = snapshot.data;
+                    List<Meal> meals = menuData?['meals'] as List<Meal>;
+                    return ExpansionTile(
+                      title: Text('Menu ${index + 1}'),
+                      children: [
+                        MenuMealsWidget(meals: meals),
+                      ],
+                    );
+                  } else {
+                    return const CircularProgressIndicator();
+                  }
+                },
+              );
+            },
+          );
+        } else {
+          return const CircularProgressIndicator();
+        }
+      },
+    );
+  }
+}
+
+class MenuMealsWidget extends StatelessWidget {
+  final List<Meal> meals;
+  const MenuMealsWidget({super.key, required this.meals});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: meals.length * 100.0, // Assuming each item has a height of 50.0
+      child: ListView.builder(
+        physics: const NeverScrollableScrollPhysics(),
+        itemCount: meals.length,
+        itemBuilder: (context, index) {
+          Meal meal = meals[index];
+          return ListTile(
+            title: Text(meal.name),
+            subtitle: Text(meal.description),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(meal.imageUrl),
+            ),
+            trailing: Text('\$${meal.price.toStringAsFixed(2)}'),
+          );
+        },
+      ),
+    );
   }
 }

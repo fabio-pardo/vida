@@ -35,7 +35,10 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
             return const Center(
-                child: Text('No meals available. Want to create Some?'));
+              child: Text(
+                'No meals available. Want to create Some?',
+              ),
+            );
           } else {
             List<Meal>? meals = snapshot.data;
             return ListView.builder(

@@ -88,3 +88,10 @@ Future<List<Future<Map<String, Object>>>> getMenus() async {
   }).toList();
   return menusList;
 }
+
+void deleteMenus(String docToDelete) {
+  FirebaseFirestore.instance.collection('menus').doc(docToDelete).delete().then(
+        (doc) => print('Document deleted'),
+        onError: (e) => print('Error deleting document $e'),
+      );
+}

@@ -12,7 +12,12 @@
           "package_name": "com.example.vida"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "917175833848-s2o2001d03ejqfgmeqjhn6r9anj0c795.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAWNrsqCnMIpSuKb9NMt9GJrA1E5fEDfgc"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "917175833848-s2o2001d03ejqfgmeqjhn6r9anj0c795.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "917175833848-5bkc13gb03trud79c0icd1a49g30gfph.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.vida"
+              }
+            }
+          ]
         }
       }
     }

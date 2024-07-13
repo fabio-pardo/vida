@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:vida/models/meal.dart';
+import 'package:vida/utils/logger.dart';
 
 Future<void> addMeal(Meal meal) async {
   CollectionReference meals = FirebaseFirestore.instance.collection('meals');
@@ -32,7 +33,7 @@ Meal makeMeal(DocumentSnapshot<Object?> document, Map<String, dynamic> data) {
   );
 }
 
-Future<void> getUserRole(String uid, Function(String) callback) async {
+Future<void> getUserRole(String uid, Function(dynamic) callback) async {
   try {
     CollectionReference users = FirebaseFirestore.instance.collection('users');
     DocumentSnapshot documentSnapshot = await users.doc(uid).get();
@@ -42,10 +43,10 @@ Future<void> getUserRole(String uid, Function(String) callback) async {
           documentSnapshot.data() as Map<String, dynamic>;
       callback(userData["role"]);
     } else {
-      print('No user found with the specified UID: $uid');
+      callback(null);
     }
   } catch (e) {
-    print('Error retrieving user data: $e');
+    log.i('Error retrieving user data: $e');
   }
 }
 
@@ -91,7 +92,7 @@ Future<List<Future<Map<String, Object>>>> getMenus() async {
 
 void deleteMenus(String docToDelete) {
   FirebaseFirestore.instance.collection('menus').doc(docToDelete).delete().then(
-        (doc) => print('Document deleted'),
-        onError: (e) => print('Error deleting document $e'),
+        (doc) => log.i('Document deleted'),
+        onError: (e) => log.i('Error deleting document $e'),
       );
 }

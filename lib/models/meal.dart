@@ -1,3 +1,5 @@
+import 'package:vida/utils/logger.dart';
+
 class Meal {
   Meal({
     required this.id,
@@ -14,10 +16,10 @@ class Meal {
   final double price;
 
   void printDetails() {
-    print('ID: $id');
-    print('Name: $name');
-    print('Description: $description');
-    print('Price: $price');
-    print('Image URL: $imageUrl');
+    log.i('ID: $id');
+    log.i('Name: $name');
+    log.i('Description: $description');
+    log.i('Price: $price');
+    log.i('Image URL: $imageUrl');
   }
 }

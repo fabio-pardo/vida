@@ -1,4 +1,5 @@
 import 'package:vida/models/meal.dart';
+import 'package:vida/utils/logger.dart';
 
 class Menu {
   Menu({this.meals = const <Meal>[]});
@@ -6,9 +7,9 @@ class Menu {
   final List<Meal> meals;
 
   void printMenu() {
-    print('Menu: Bon Appétit!');
+    log.i('Menu: Bon Appétit!');
     for (final Meal meal in meals) {
-      print('-----------------------');
+      log.i('-----------------------');
       meal.printDetails();
     }
   }

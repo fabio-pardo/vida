@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:vida/services/firebase_firestore.dart';
+import 'package:vida/utils/logger.dart';
 import 'package:vida/widgets/admin/navbar.dart';
 import 'package:vida/widgets/auth/signin.dart';
 import 'package:vida/widgets/auth/signout.dart';
@@ -17,10 +18,17 @@ class AuthPageState extends State<AuthPage> {
   String? _userRole;
 
   @override
+  void initState() {
+    super.initState();
+    _initializePage();
+  }
+
+  @override
   Widget build(BuildContext context) {
     if (_user == null) {
       return SignInPage(signInCallback: _signIn);
     }
+
     switch (_userRole) {
       case "admin":
         return AdminHomePage(signOutCallback: _signOut);
@@ -29,26 +37,18 @@ class AuthPageState extends State<AuthPage> {
     return SignOutPage(signOutCallback: _signOut);
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initializePage();
-  }
-
   Future<void> _initializePage() async {
-    await _checkCurrentUser();
-    if (_user != null) {
-      await getUserRole(_user!.uid, _checkUserRole);
-    }
+    await _initializeCurrentUser();
   }
 
-  Future<void> _checkCurrentUser() async {
+  Future<void> _initializeCurrentUser() async {
     setState(() {
       _user = FirebaseAuth.instance.currentUser;
     });
+    await getUserRole(_user!.uid, _setUserRole);
   }
 
-  void _checkUserRole(userRole) {
+  void _setUserRole(dynamic userRole) {
     setState(() {
       _userRole = userRole;
     });
@@ -61,14 +61,14 @@ class AuthPageState extends State<AuthPage> {
         password: 'test1234',
       );
       _initializePage();
+      log.i("Logged User In");
     } catch (e) {
-      print("Error occurred: $e");
+      log.e("Error occurred: $e");
     }
   }
 
   void _signOut() async {
     await FirebaseAuth.instance.signOut();
-    await _checkCurrentUser();
-    _userRole = null;
+    await _initializeCurrentUser();
   }
 }

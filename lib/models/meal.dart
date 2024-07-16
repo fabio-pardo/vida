@@ -16,10 +16,12 @@ class Meal {
   final double price;
 
   void printDetails() {
-    log.i('ID: $id');
-    log.i('Name: $name');
-    log.i('Description: $description');
-    log.i('Price: $price');
-    log.i('Image URL: $imageUrl');
+    log.i("""
+      ID: $id, 
+      Name: $name, 
+      Description: $description, 
+      Price: $price, 
+      Image Url: $imageUrl
+      """);
   }
 }

@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vida/models/meal.dart';
-import 'package:vida/services/firebase_firestore.dart';
+import 'package:vida/models/menu.dart';
+import 'package:vida/main.dart';
+import 'package:vida/services/api_service.dart';
 
-class AdminMealsPage extends StatefulWidget {
+class AdminMealsPage extends ConsumerStatefulWidget {
   const AdminMealsPage({super.key});
   @override
-  State<StatefulWidget> createState() => _AdminMealsPageState();
+  ConsumerState<AdminMealsPage> createState() => _AdminMealsPageState();
 }
 
-class _AdminMealsPageState extends State<AdminMealsPage> {
-  Set<String> selectedMeals = {};
+class _AdminMealsPageState extends ConsumerState<AdminMealsPage> {
+  Set<int> selectedMeals = {};
 
-  void toggleSelectedMeals(String mealID) {
+  void toggleSelectedMeals(int mealID) {
     setState(() {
       if (selectedMeals.contains(mealID)) {
         selectedMeals.remove(mealID);
@@ -25,9 +28,11 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final apiService = ref.watch(apiServiceProvider);
+    
     return Scaffold(
       body: FutureBuilder<List<Meal>>(
-        future: getMeals(),
+        future: apiService.getMeals(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -65,7 +70,18 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
         visible: selectedMeals.isNotEmpty,
         child: FloatingActionButton(
           onPressed: () {
-            addMenu(selectedMeals);
+            final apiService = ref.read(apiServiceProvider);
+            // Create a new menu with the selected meals
+            final now = DateTime.now();
+            final newMenu = Menu(
+              id: 0, // Backend will assign an actual ID
+              name: 'Menu ${now.day}/${now.month}/${now.year}',
+              description: 'Created on ${now.day}/${now.month}/${now.year}',
+              weekStartDate: now,
+              weekEndDate: now.add(const Duration(days: 7)),
+              mealIds: selectedMeals.toList(),
+            );
+            apiService.createMenu(newMenu);
           },
           child: const Icon(Icons.check),
         ),
@@ -86,6 +102,7 @@ class _AdminMealsPageState extends State<AdminMealsPage> {
 }
 
 void showAddMealModal(BuildContext context, VoidCallback onAddMeal) {
+  final apiService = ProviderScope.containerOf(context).read(apiServiceProvider);
   final formKey = GlobalKey<FormState>();
   final TextEditingController nameController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -150,14 +167,13 @@ void showAddMealModal(BuildContext context, VoidCallback onAddMeal) {
               ElevatedButton(
                 onPressed: () {
                   if (formKey.currentState!.validate()) {
-                    // Handle the submission of the new meal
-                    addMeal(
+                    // Handle the submission of the new meal using our API service
+                    apiService.createMeal(
                       Meal(
-                        id: 'null',
+                        id: 0, // Backend will assign an actual ID
                         name: nameController.text,
                         description: descriptionController.text,
-                        imageUrl:
-                            'https://firebasestorage.googleapis.com/v0/b/vida-meals.appspot.com/o/lasagna?alt=media&token=4fb7d92d-5b87-4dae-84b5-26dcb7868e32',
+                        imageUrl: 'https://example.com/placeholder-meal-image.jpg',
                         price: double.parse(priceController.text),
                       ),
                     ).then((_) {
@@ -176,47 +192,44 @@ void showAddMealModal(BuildContext context, VoidCallback onAddMeal) {
   );
 }
 
-class AdminMenuPage extends StatefulWidget {
+class AdminMenuPage extends ConsumerStatefulWidget {
   const AdminMenuPage({super.key});
 
   @override
-  State<StatefulWidget> createState() => _AdminMenuPageState();
+  ConsumerState<AdminMenuPage> createState() => _AdminMenuPageState();
 }
 
-class _AdminMenuPageState extends State<AdminMenuPage> {
+class _AdminMenuPageState extends ConsumerState<AdminMenuPage> {
   @override
   Widget build(BuildContext context) {
-    var menus = getMenus();
-    return FutureBuilder(
-      future: menus,
+    final apiService = ref.watch(apiServiceProvider);
+    
+    return FutureBuilder<List<Menu>>(
+      future: apiService.getMenus(),
       builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          List<Future<Map<String, Object>>>? menuFutures = snapshot.data;
-          return ListView.builder(
-            itemCount: menuFutures?.length,
-            itemBuilder: (context, index) {
-              return FutureBuilder(
-                future: menuFutures?[index],
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    Map<String, Object>? menuData = snapshot.data;
-                    List<Meal> meals = menuData?['meals'] as List<Meal>;
-                    return ExpansionTile(
-                      title: Text('Menu ${index + 1}'),
-                      children: [
-                        MenuMealsWidget(meals: meals),
-                      ],
-                    );
-                  } else {
-                    return const CircularProgressIndicator();
-                  }
-                },
-              );
-            },
-          );
-        } else {
-          return const CircularProgressIndicator();
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error loading menus: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return const Center(child: Text('No menus available'));
         }
+        
+        final menus = snapshot.data!;
+        return ListView.builder(
+          itemCount: menus.length,
+          itemBuilder: (context, index) {
+            final menu = menus[index];
+            return ExpansionTile(
+              title: Text(menu.name),
+              subtitle: Text('${menu.weekStartDate.toLocal().toString().split(' ')[0]} to ${menu.weekEndDate.toLocal().toString().split(' ')[0]}'),
+              children: [
+                Text(menu.description),
+                MenuMealsWidget(meals: menu.meals),
+              ],
+            );
+          },
+        );
       },
     );
   }

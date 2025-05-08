@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vida/widgets/admin/homepage.dart';
 
-class AdminHomePage extends StatefulWidget {
+class AdminHomePage extends ConsumerStatefulWidget {
   const AdminHomePage({super.key, required this.signOutCallback});
   final VoidCallback signOutCallback;
   @override
   AdminHomePageState createState() => AdminHomePageState();
 }
 
-class AdminHomePageState extends State<AdminHomePage> {
+class AdminHomePageState extends ConsumerState<AdminHomePage> {
   static const IconData mealIcon =
       IconData(0xe532, fontFamily: 'MaterialIcons');
 
